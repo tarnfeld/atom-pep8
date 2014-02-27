@@ -7,8 +7,14 @@ Pep8ErrorsView = require './pep8-view'
 module.exports =
     supportedExtensions: [".py"]
     errorView: null
+    pep8Path: null
 
     activate: (state) ->
+        unless atom.config.get('pep8.PEP8Path')
+            atom.config.set('pep8.PEP8Path', "/usr/local/bin/pep8")
+
+        @pep8Path = atom.config.get('pep8.PEP8Path')
+
         atom.workspaceView.command 'pep8:lint', =>
             @lint()
 
@@ -34,7 +40,9 @@ module.exports =
         line_expr = /:(\d+):(\d+): (E\d{3}) (.*)/
         errors = []
 
-        proc = process.spawn("/usr/local/bin/pep8", [path])
+        return unless @pep8Path
+
+        proc = process.spawn(@pep8Path, [path])
 
         # Watch for pep8 errors
         output = byline(proc.stdout)
