@@ -1,0 +1,15 @@
+{
+  "name": "pep8",
+  "main": "./lib/pep8",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Automatically lints your Python code against PEP8",
+  "activationEvents": ["pep8:toggle"],
+  "repository": "https://github.com/tarnfeld/atom-pep8",
+  "license": "MIT",
+  "engines": {
+    "atom": ">0.50.0"
+  },
+  "dependencies": {
+  }
+}

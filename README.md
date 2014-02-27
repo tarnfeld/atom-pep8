@@ -1,4 +1,3 @@
-atom-pep8
-=========
+# pep8 package
 
-An atom package that automatically validates .py files with pep8
+A short description of your package.
