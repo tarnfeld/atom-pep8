@@ -1,16 +1,12 @@
 # See https://atom.io/docs/latest/creating-a-package#menus for more details
-'context-menu':
-  '.overlayer':
-      'Enable pep8': 'pep8:toggle'
-
 'menu': [
-  {
-    'label': 'Packages'
-    'submenu': [
-      'label': 'pep8'
-      'submenu': [
-        { 'label': 'Toggle', 'command': 'pep8:toggle' }
-      ]
-    ]
-  }
+    {
+        'label': 'Packages'
+        'submenu': [
+            'label': 'pep8'
+            'submenu': [
+                { 'label': 'Lint with pep8', 'command': 'pep8:lint' }
+            ]
+        ]
+    }
 ]

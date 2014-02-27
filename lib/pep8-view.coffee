@@ -1,24 +1,56 @@
-{View} = require 'atom'
+{$$, Point, SelectListView} = require 'atom'
 
 module.exports =
-class Pep8LinterView extends View
-  @content: ->
-    @div class: 'pep8 overlay from-top', =>
-      @div "The Pep8Linter package is Alive! It's ALIVE!", class: "message"
+class Pep8ErrorsView extends SelectListView
 
-  initialize: (serializeState) ->
-    atom.workspaceView.command "pep8:toggle", => @toggle()
+    initialize: ->
+        @addClass('pep8-errors overlay from-top')
 
-  # Returns an object that can be retrieved when package is activated
-  serialize: ->
+    destroy: ->
+        @cancel()
+        @remove()
 
-  # Tear down any state and detach
-  destroy: ->
-    @detach()
+        atom.workspaceView.off "keydown.pep8"
 
-  toggle: ->
-    console.log "Pep8LinterView was toggled!"
-    if @hasParent()
-      @detach()
-    else
-      atom.workspaceView.append(this)
+    viewForItem: ({line, position, type, message}) ->
+        lineText = @editor().getTextInBufferRange([[line], [line+1]])
+
+        $$ ->
+            @li class: "two-lines", =>
+                @div type + " " + message, class: "primary-line"
+                @div line + ": " + lineText.trim()
+
+    editorView: ->
+        atom.workspaceView.getActiveView()
+
+    editor: ->
+        @editorView().getEditor()
+
+    show: ->
+        @storeFocusedElement()
+        atom.workspaceView.appendToTop(this)
+
+        atom.workspaceView.on "keydown.pep8", (event) =>
+            if event.keyCode == 27
+                @destroy()
+                return false
+            if event.keyCode == 38
+                @selectPreviousItemView()
+                return false
+            if event.keyCode == 40
+                @selectNextItemView()
+                return false
+
+    selectItemView: (view) ->
+        super
+
+        {line, position} = @getSelectedItem()
+        @moveToPosition line, position
+
+    confirmed : ({line, position}) ->
+        @destroy()
+        @moveToPosition line, position
+
+    moveToPosition: (line, position) ->
+        @editorView().scrollToBufferPosition([line, position], center: true)
+        @editor().setCursorBufferPosition([line, position])
