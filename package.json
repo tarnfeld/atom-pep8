@@ -4,9 +4,6 @@
   "version": "0.1.0",
   "private": true,
   "description": "Automatically lints your Python code against PEP8",
-  "activationEvents": [
-    "pep8:lint"
-  ],
   "repository": "https://github.com/tarnfeld/atom-pep8",
   "license": "MIT",
   "engines": {

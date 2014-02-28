@@ -30,10 +30,10 @@ module.exports =
         @pep8Path = atom.config.get('pep8.PEP8Path')
         @ignoreErrors = atom.config.get('pep8.ignoreErrors')
 
-    activate: (state) ->
+    activate: ->
         @loadConfig()
 
-        atom.workspaceView.command 'pep8:lint', =>
+        atom.workspaceView.command 'core:save', =>
             @lint()
 
     lint: ->
