@@ -64,22 +64,27 @@ module.exports =
 
         # Watch for pep8 errors
         output = byline(proc.stdout)
-        output.on 'data', (line) ->
+        output.on 'data', (line) =>
             line = line.toString().replace path, ""
             matches = line_expr.exec(line)
 
             if matches
+                [_, line, position, type, message] = matches
+
+                if type in @ignoreErrors
+                    return # Skip errors the user has chosen to ignore
+
                 errors.push {
-                    "message": matches.pop(),
-                    "type": matches.pop(),
-                    "position": parseInt(matches.pop()) - 1,
-                    "line": parseInt(matches.pop()) - 1
+                    "message": message,
+                    "type": type,
+                    "position": parseInt(position) - 1,
+                    "line": parseInt(line) - 1
                 }
             else
                 console.log "PEP8 Linter: Failed to match " + line
 
         # Watch for the exit code
         proc.on 'exit', (exit_code, signal) ->
-            if not exit_code or not errors
+            if not exit_code or not errors.length > 0
                 return
             callback errors
