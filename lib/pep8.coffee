@@ -9,11 +9,29 @@ module.exports =
     errorView: null
     pep8Path: null
 
-    activate: (state) ->
-        unless atom.config.get('pep8.PEP8Path')
-            atom.config.set('pep8.PEP8Path', "/usr/local/bin/pep8")
+    defaultConfig:
+        'pep8.PEP8Path': '/usr/local/bin/pep8',
+        'pep8.ignoreErrors': []
+    boundObservers: false
+
+    loadConfig: ->
+
+        if not @boundObservers
+            for config_key, default_val of @defaultConfig
+                atom.config.observe(config_key, {}, @loadConfig)
+            @boundObservers = true
+
+        console.log "PEP8 Liner: Loading config"
+
+        for config_key, default_val of @defaultConfig
+            unless atom.config.get(config_key)
+                atom.config.set(config_key, default_val)
 
         @pep8Path = atom.config.get('pep8.PEP8Path')
+        @ignoreErrors = atom.config.get('pep8.ignoreErrors')
+
+    activate: (state) ->
+        @loadConfig()
 
         atom.workspaceView.command 'pep8:lint', =>
             @lint()
