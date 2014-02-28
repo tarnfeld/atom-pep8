@@ -1,7 +1,7 @@
 {
   "name": "pep8",
   "main": "./lib/pep8",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "description": "Automatically lints your Python code against PEP8",
   "repository": "https://github.com/tarnfeld/atom-pep8",
