@@ -1,0 +1,18 @@
+{
+  "menu":[
+    {
+      "label": "Packages",
+      "submenu": [
+        {
+          "label": "PEP8",
+          "submenu": [
+              {
+                "label": "Lint",
+                "command": "pep8:lint"
+              }
+            ]
+        }
+      ]
+    }
+  ]
+}

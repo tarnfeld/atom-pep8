@@ -32,6 +32,9 @@ module.exports =
 
     activate: ->
         @loadConfig()
+        
+        atom.workspaceView.command 'pep8:lint', =>
+            @lint()
 
         atom.workspaceView.command 'core:save', =>
             @lint()
