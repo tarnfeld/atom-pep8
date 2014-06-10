@@ -7,34 +7,25 @@ Pep8ErrorsView = require './pep8-view'
 module.exports =
     supportedExtensions: [".py"]
     errorView: null
-    pep8Path: null
 
-    defaultConfig:
-        'pep8.PEP8Path': '/usr/local/bin/pep8',
-        'pep8.ignoreErrors': []
-    boundObservers: false
-
-    loadConfig: ->
-
-        if not @boundObservers
-            for config_key, default_val of @defaultConfig
-                atom.config.observe(config_key, {}, @loadConfig)
-            @boundObservers = true
-
-        console.log "PEP8 Liner: Loading config"
-
-        for config_key, default_val of @defaultConfig
-            unless atom.config.get(config_key)
-                atom.config.set(config_key, default_val)
-
-        @pep8Path = atom.config.get('pep8.PEP8Path')
-        @ignoreErrors = atom.config.get('pep8.ignoreErrors')
+    initConfig: ->
+      atom.config.setDefaults('pep8',
+        PEP8Path: '/usr/local/bin/pep8',
+        ignoreErrors: [],
+        lintOnSave: true
+      )
 
     activate: ->
-        @loadConfig()
+        @initConfig()
+
+        atom.workspaceView.command 'pep8:lint', =>
+            @lint()
 
         atom.workspaceView.command 'core:save', =>
-            @lint()
+            @onSave()
+
+    onSave: ->
+        @lint() if atom.config.get('pep8.lintOnSave')
 
     lint: ->
         editor = atom.workspace.getActiveEditor()
@@ -58,9 +49,12 @@ module.exports =
         line_expr = /:(\d+):(\d+): (E\d{3}) (.*)/
         errors = []
 
-        return unless @pep8Path
+        pep8Path = atom.config.get('pep8.PEP8Path')
+        ignoreErrors = atom.config.get('pep8.ignoreErrors')
 
-        proc = process.spawn(@pep8Path, [path])
+        return unless pep8Path
+
+        proc = process.spawn(pep8Path, [path])
 
         # Watch for pep8 errors
         output = byline(proc.stdout)
@@ -71,7 +65,7 @@ module.exports =
             if matches
                 [_, line, position, type, message] = matches
 
-                if type in @ignoreErrors
+                if type in ignoreErrors
                     return # Skip errors the user has chosen to ignore
 
                 errors.push {
