@@ -10,9 +10,8 @@ It requires you have the `pep8` command line tool installed, if it's not install
 
 - *PEP8 Path*: Path to the pep8 binary for linting (default: `/usr/local/bin/pep8`)
 - *Ignore Errors*: Command separated list of pep8 errors to ignore (default: `null`) (example: `E501, E302`). A complete list of error codes can be found [here](http://pep8.readthedocs.org/en/latest/intro.html#error-codes).
-
+- *Lint On Save*: If checked, PEP8 linting is performed any time a Python file is saved. (Default: Checked)
 ### TODO
 
-- Automatically lint files on save (optional)
 - Try and automatically locate the pep8 tool (or bundle one in here)
 - Tests tests tests
